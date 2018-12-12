@@ -1,10 +1,10 @@
 //return array of path from start to end
-// returns None if path is not found
+// returns null if path is not found
 //start:{x:1,y:1}
 function aStar (idxArray,m,n,start,end){
 
-    var startIdx = xy2idx(start.x,start.x)
-    var endIdx = xy2idx(end.x,end.x)
+    var startIdx = xy2idx(start.x,start.y,m,n)
+    var endIdx = xy2idx(end.x,end.y,m,n)
     
     //Initialize
     var queue =  [endIdx];
@@ -13,19 +13,17 @@ function aStar (idxArray,m,n,start,end){
     for (var i = 0;i<queue.length;++i){
         if(queue[i] == startIdx ){
             console.log('DONE')
-            break;
+            return computePath(idxArray,startIdx,endIdx);
         }
         var tempList = gen(idxArray,idxArray[queue[i]],queue[i],m,n);
         //console.log({a:queue[i],tempList,queue})
         //console.log(queue.length)    
         queue = queue.concat(tempList)
     }
-
+    return null;
 
 }
 function gen (idxArray,current,idx,m,n){
-    var x = current.i;
-    var y = current.j;
     var count = current.c+1;
     var maxIdx = (m*n)-1;
     
@@ -59,4 +57,14 @@ function gen (idxArray,current,idx,m,n){
 
 function xy2idx (x,y,m,n){
     return (x*n)+y;
+}
+
+function computePath(idxArray,startIdx,endIdx){
+    var path = [startIdx]
+    while(path[path.length-1]!=endIdx){
+        if(idxArray[path[path.length-1]].parent)
+            path.push(idxArray[path[path.length-1]].parent)
+        else return null;
+    }
+    return path;
 }
